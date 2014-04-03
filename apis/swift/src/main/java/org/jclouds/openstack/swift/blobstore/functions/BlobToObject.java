@@ -17,6 +17,7 @@
 package org.jclouds.openstack.swift.blobstore.functions;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.jclouds.openstack.swift.reference.SwiftHeaders.DETECT_CONTENT_TYPE;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -25,6 +26,7 @@ import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.openstack.swift.domain.SwiftObject;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Multimap;
 
 /**
  * @author Adrian Cole
@@ -45,7 +47,14 @@ public class BlobToObject implements Function<Blob, SwiftObject> {
          return null;
       SwiftObject object = objectProvider.create(blob2ObjectMd.apply(from.getMetadata()));
       object.setPayload(checkNotNull(from.getPayload(), "payload: " + from));
-      object.setAllHeaders(from.getAllHeaders());
+
+      Multimap<String, String> headers = from.getAllHeaders();
+      // let Swift determine the content type...
+      if (from.getMetadata().getContentMetadata().getContentType().equals("application/unknown")) {
+         headers.put(DETECT_CONTENT_TYPE, "True");
+      }
+
+      object.setAllHeaders(headers);
       return object;
    }
 }

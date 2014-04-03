@@ -33,8 +33,9 @@ public interface SwiftHeaders {
 
    public static final String USER_METADATA_PREFIX = "X-Object-Meta-";
    public static final String OBJECT_COPY_FROM = "X-Copy-From";
-   
+
    public static final String CONTAINER_READ = "X-Container-Read";
    public static final String CONTAINER_WRITE = "X-Container-Write";
 
+   public static final String DETECT_CONTENT_TYPE = "X-Detect-Content-Type";
 }

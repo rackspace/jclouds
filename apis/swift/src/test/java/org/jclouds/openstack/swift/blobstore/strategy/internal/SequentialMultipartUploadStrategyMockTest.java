@@ -18,6 +18,7 @@ package org.jclouds.openstack.swift.blobstore.strategy.internal;
 
 import static com.google.common.util.concurrent.MoreExecutors.sameThreadExecutor;
 import static org.jclouds.Constants.PROPERTY_MAX_RETRIES;
+import static org.jclouds.Constants.PROPERTY_MPU_PARTS_SIZE;
 import static org.jclouds.Constants.PROPERTY_SO_TIMEOUT;
 import static org.testng.Assert.assertEquals;
 
@@ -29,6 +30,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.jclouds.Constants;
 import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.domain.internal.BlobBuilderImpl;
 import org.jclouds.concurrent.config.ExecutorServiceModule;
@@ -105,7 +107,7 @@ public class SequentialMultipartUploadStrategyMockTest {
       // prevent expect-100 bug http://code.google.com/p/mockwebserver/issues/detail?id=6
       overrides.setProperty(PROPERTY_SO_TIMEOUT, "0");
       overrides.setProperty(PROPERTY_MAX_RETRIES, "1");
-      overrides.setProperty("jclouds.mpu.parts.size", String.valueOf(partSize));
+      overrides.setProperty(PROPERTY_MPU_PARTS_SIZE, String.valueOf(partSize));
       return ContextBuilder.newBuilder("swift-keystone")
                            .credentials("user", "password").endpoint(uri)
                            .overrides(overrides)

@@ -121,7 +121,7 @@ public final class Constants {
     * <p/>
     * Explicitly sets the type of a proxy server.
     * 
-    * @see Proxy.Type
+    * @see java.net.Proxy.Type
     */
    public static final String PROPERTY_PROXY_TYPE = "jclouds.proxy-type";
    
@@ -254,7 +254,7 @@ public final class Constants {
     * <p/>
     * comma-delimited iso 3166 codes; ex. US-CA,US
     * 
-    * @see Location#getIso3166Codes
+    * @see org.jclouds.domain.Location#getIso3166Codes
     */
    public static final String PROPERTY_ISO3166_CODES = "jclouds." + LocationConstants.ISO3166_CODES;
 
@@ -302,6 +302,31 @@ public final class Constants {
     * The maximum number of blob deletes happening in parallel at any point in time.
     */
    public static final String PROPERTY_MAX_PARALLEL_DELETES = "jclouds.max-parallel-deletes";
+
+   /**
+    * The size (in bytes) of object parts being uploaded in parallel.
+    */
+   public static final String PROPERTY_MPU_PARTS_SIZE = "jclouds.mpu.parts.size";
+
+   /**
+    * The magnitude of object parts being uploaded in parallel.
+    */
+   public static final String PROPERTY_MPU_PARTS_MAGNITUDE = "jclouds.mpu.parts.magnitude";
+
+   /**
+    * The number of object parts being uploaded in parallel.
+    */
+   public static final String PROPERTY_MPU_PARALLEL_DEGREE = "jclouds.mpu.parallel.degree";
+
+   /**
+    * The minimum number of retries when uploading an object part.
+    */
+   public static final String PROPERTY_MPU_PARALLEL_RETRIES_MIN = "jclouds.mpu.parallel.retries.min";
+
+   /**
+    * The maximum percentage of retries when uploading an object part.
+    */
+   public static final String PROPERTY_MPU_PARALLEL_RETRIES_MAX_PERCENT = "jclouds.mpu.parallel.retries.maxpercent";
 
    private Constants() {
       throw new AssertionError("intentionally unimplemented");

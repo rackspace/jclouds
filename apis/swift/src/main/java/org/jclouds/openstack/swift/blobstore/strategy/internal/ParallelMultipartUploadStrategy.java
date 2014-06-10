@@ -17,6 +17,9 @@
 package org.jclouds.openstack.swift.blobstore.strategy.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.jclouds.Constants.PROPERTY_MPU_PARALLEL_DEGREE;
+import static org.jclouds.Constants.PROPERTY_MPU_PARALLEL_RETRIES_MAX_PERCENT;
+import static org.jclouds.Constants.PROPERTY_MPU_PARALLEL_RETRIES_MIN;
 
 import java.util.Map;
 import java.util.Queue;
@@ -70,17 +73,17 @@ public class ParallelMultipartUploadStrategy implements AsyncMultipartUploadStra
     static final int DEFAULT_MAX_PERCENT_RETRIES = 10;
 
     @Inject(optional = true)
-    @Named("jclouds.mpu.parallel.degree")
+    @Named(PROPERTY_MPU_PARALLEL_DEGREE)
     @VisibleForTesting
     int parallelDegree = DEFAULT_PARALLEL_DEGREE;
 
     @Inject(optional = true)
-    @Named("jclouds.mpu.parallel.retries.min")
+    @Named(PROPERTY_MPU_PARALLEL_RETRIES_MIN)
     @VisibleForTesting
     int minRetries = DEFAULT_MIN_RETRIES;
 
     @Inject(optional = true)
-    @Named("jclouds.mpu.parallel.retries.maxpercent")
+    @Named(PROPERTY_MPU_PARALLEL_RETRIES_MAX_PERCENT)
     @VisibleForTesting
     int maxPercentRetries = DEFAULT_MAX_PERCENT_RETRIES;
 

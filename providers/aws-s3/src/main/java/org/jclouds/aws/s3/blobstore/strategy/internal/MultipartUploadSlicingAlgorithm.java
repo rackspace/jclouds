@@ -28,12 +28,16 @@ package org.jclouds.aws.s3.blobstore.strategy.internal;
 import javax.annotation.Resource;
 import javax.inject.Named;
 
+import org.jclouds.Constants;
 import org.jclouds.aws.s3.blobstore.strategy.MultipartUpload;
 import org.jclouds.blobstore.reference.BlobStoreConstants;
 import org.jclouds.logging.Logger;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
+
+import static org.jclouds.Constants.PROPERTY_MPU_PARTS_MAGNITUDE;
+import static org.jclouds.Constants.PROPERTY_MPU_PARTS_SIZE;
 
 public class MultipartUploadSlicingAlgorithm {
 
@@ -48,12 +52,12 @@ public class MultipartUploadSlicingAlgorithm {
    static final int DEFAULT_MAGNITUDE_BASE = 100;
    
    @Inject(optional = true)
-   @Named("jclouds.mpu.parts.size")
+   @Named(PROPERTY_MPU_PARTS_SIZE)
    @VisibleForTesting
    long defaultPartSize = DEFAULT_PART_SIZE;
    
    @Inject(optional = true)
-   @Named("jclouds.mpu.parts.magnitude")
+   @Named(PROPERTY_MPU_PARTS_MAGNITUDE)
    @VisibleForTesting
    int magnitudeBase = DEFAULT_MAGNITUDE_BASE;
 

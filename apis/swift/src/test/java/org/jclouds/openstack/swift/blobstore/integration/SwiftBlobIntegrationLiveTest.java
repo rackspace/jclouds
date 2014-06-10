@@ -16,6 +16,7 @@
  */
 package org.jclouds.openstack.swift.blobstore.integration;
 
+import static org.jclouds.Constants.PROPERTY_MPU_PARTS_SIZE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertTrue;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.jclouds.Constants;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.blobstore.integration.internal.BaseBlobIntegrationTest;
@@ -54,7 +56,7 @@ public class SwiftBlobIntegrationLiveTest extends BaseBlobIntegrationTest {
    protected Properties setupProperties() {
       Properties props = super.setupProperties();
       setIfTestSystemPropertyPresent(props, KeystoneProperties.CREDENTIAL_TYPE);
-      props.setProperty("jclouds.mpu.parts.size", String.valueOf(PART_SIZE));
+      props.setProperty(PROPERTY_MPU_PARTS_SIZE, String.valueOf(PART_SIZE));
       return props;
    }
    

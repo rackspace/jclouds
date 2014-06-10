@@ -18,6 +18,7 @@ package org.jclouds.aws.s3.blobstore.strategy.internal;
 
 import static com.google.common.util.concurrent.MoreExecutors.sameThreadExecutor;
 import static org.jclouds.Constants.PROPERTY_MAX_RETRIES;
+import static org.jclouds.Constants.PROPERTY_MPU_PARTS_SIZE;
 import static org.jclouds.Constants.PROPERTY_SO_TIMEOUT;
 import static org.jclouds.s3.reference.S3Constants.PROPERTY_S3_VIRTUAL_HOST_BUCKETS;
 import static org.testng.Assert.assertEquals;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
 
+import org.jclouds.Constants;
 import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.domain.internal.BlobBuilderImpl;
 import org.jclouds.concurrent.config.ExecutorServiceModule;
@@ -136,7 +138,7 @@ public class SequentialMultipartUploadStrategyMockTest {
       // prevent expect-100 bug http://code.google.com/p/mockwebserver/issues/detail?id=6
       overrides.setProperty(PROPERTY_SO_TIMEOUT, "0");
       overrides.setProperty(PROPERTY_MAX_RETRIES, "1");
-      overrides.setProperty("jclouds.mpu.parts.size", String.valueOf(partSize));
+      overrides.setProperty(PROPERTY_MPU_PARTS_SIZE, String.valueOf(partSize));
       return ContextBuilder.newBuilder("aws-s3")
                            .credentials("accessKey", "secretKey")
                            .endpoint(uri)

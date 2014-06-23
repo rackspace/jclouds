@@ -27,7 +27,6 @@ package org.jclouds.openstack.swift.blobstore.strategy.internal;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
-import org.jclouds.Constants;
 import org.jclouds.blobstore.reference.BlobStoreConstants;
 import org.jclouds.logging.Logger;
 import org.jclouds.openstack.swift.blobstore.strategy.MultipartUpload;
@@ -35,8 +34,8 @@ import org.jclouds.openstack.swift.blobstore.strategy.MultipartUpload;
 import javax.annotation.Resource;
 import javax.inject.Named;
 
-import static org.jclouds.Constants.PROPERTY_MPU_PARTS_MAGNITUDE;
-import static org.jclouds.Constants.PROPERTY_MPU_PARTS_SIZE;
+import static org.jclouds.blobstore.config.BlobStoreProperties.PROPERTY_MPU_PARTS_MAGNITUDE;
+import static org.jclouds.blobstore.config.BlobStoreProperties.PROPERTY_MPU_PARTS_SIZE;
 
 public class MultipartUploadSlicingAlgorithm {
 

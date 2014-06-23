@@ -303,31 +303,6 @@ public final class Constants {
     */
    public static final String PROPERTY_MAX_PARALLEL_DELETES = "jclouds.max-parallel-deletes";
 
-   /**
-    * The size (in bytes) of object parts being uploaded in parallel.
-    */
-   public static final String PROPERTY_MPU_PARTS_SIZE = "jclouds.mpu.parts.size";
-
-   /**
-    * The magnitude of object parts being uploaded in parallel.
-    */
-   public static final String PROPERTY_MPU_PARTS_MAGNITUDE = "jclouds.mpu.parts.magnitude";
-
-   /**
-    * The number of object parts being uploaded in parallel.
-    */
-   public static final String PROPERTY_MPU_PARALLEL_DEGREE = "jclouds.mpu.parallel.degree";
-
-   /**
-    * The minimum number of retries when uploading an object part.
-    */
-   public static final String PROPERTY_MPU_PARALLEL_RETRIES_MIN = "jclouds.mpu.parallel.retries.min";
-
-   /**
-    * The maximum percentage of retries when uploading an object part.
-    */
-   public static final String PROPERTY_MPU_PARALLEL_RETRIES_MAX_PERCENT = "jclouds.mpu.parallel.retries.maxpercent";
-
    private Constants() {
       throw new AssertionError("intentionally unimplemented");
    }

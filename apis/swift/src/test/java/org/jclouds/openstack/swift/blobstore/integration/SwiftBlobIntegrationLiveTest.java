@@ -16,7 +16,7 @@
  */
 package org.jclouds.openstack.swift.blobstore.integration;
 
-import static org.jclouds.Constants.PROPERTY_MPU_PARTS_SIZE;
+import static org.jclouds.blobstore.config.BlobStoreProperties.PROPERTY_MPU_PARTS_SIZE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertTrue;
@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.jclouds.Constants;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.blobstore.integration.internal.BaseBlobIntegrationTest;

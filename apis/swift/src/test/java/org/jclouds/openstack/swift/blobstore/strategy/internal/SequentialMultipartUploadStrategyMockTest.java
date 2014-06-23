@@ -18,7 +18,7 @@ package org.jclouds.openstack.swift.blobstore.strategy.internal;
 
 import static com.google.common.util.concurrent.MoreExecutors.sameThreadExecutor;
 import static org.jclouds.Constants.PROPERTY_MAX_RETRIES;
-import static org.jclouds.Constants.PROPERTY_MPU_PARTS_SIZE;
+import static org.jclouds.blobstore.config.BlobStoreProperties.PROPERTY_MPU_PARTS_SIZE;
 import static org.jclouds.Constants.PROPERTY_SO_TIMEOUT;
 import static org.testng.Assert.assertEquals;
 
@@ -30,7 +30,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.jclouds.Constants;
 import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.domain.internal.BlobBuilderImpl;
 import org.jclouds.concurrent.config.ExecutorServiceModule;

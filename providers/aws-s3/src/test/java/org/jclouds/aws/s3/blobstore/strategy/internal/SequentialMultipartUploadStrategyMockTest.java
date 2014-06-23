@@ -18,7 +18,7 @@ package org.jclouds.aws.s3.blobstore.strategy.internal;
 
 import static com.google.common.util.concurrent.MoreExecutors.sameThreadExecutor;
 import static org.jclouds.Constants.PROPERTY_MAX_RETRIES;
-import static org.jclouds.Constants.PROPERTY_MPU_PARTS_SIZE;
+import static org.jclouds.blobstore.config.BlobStoreProperties.PROPERTY_MPU_PARTS_SIZE;
 import static org.jclouds.Constants.PROPERTY_SO_TIMEOUT;
 import static org.jclouds.s3.reference.S3Constants.PROPERTY_S3_VIRTUAL_HOST_BUCKETS;
 import static org.testng.Assert.assertEquals;
@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
 
-import org.jclouds.Constants;
 import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.domain.internal.BlobBuilderImpl;
 import org.jclouds.concurrent.config.ExecutorServiceModule;

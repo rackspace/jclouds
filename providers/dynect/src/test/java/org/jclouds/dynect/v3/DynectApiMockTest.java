@@ -32,11 +32,12 @@ import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Module;
-import com.google.mockwebserver.MockResponse;
-import com.google.mockwebserver.MockWebServer;
+import com.squareup.okhttp.mockwebserver.MockResponse;
+import com.squareup.okhttp.mockwebserver.MockWebServer;
+
 @Test(singleThreaded = true)
 public class DynectApiMockTest {
-   
+
    private static final Set<Module> modules = ImmutableSet.<Module> of(
          new ExecutorServiceModule(sameThreadExecutor(), sameThreadExecutor()));
 

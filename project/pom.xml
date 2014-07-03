@@ -84,7 +84,7 @@
     <url>https://git-wip-us.apache.org/repos/asf?p=jclouds.git</url>
     <tag>HEAD</tag>
   </scm>
-  
+
   <repositories>
     <repository>
       <id>apache-snapshots</id>
@@ -278,11 +278,6 @@
         <artifactId>logback-core</artifactId>
         <version>1.0.9</version>
       </dependency>
-      <dependency>
-        <groupId>com.google.mockwebserver</groupId>
-        <artifactId>mockwebserver</artifactId>
-        <version>20121111</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
@@ -346,7 +341,7 @@
           <arguments>-Pdoc -Papache-release ${arguments}</arguments>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
@@ -367,7 +362,7 @@
             <exclude>**/src/test/resources/**/*.txt</exclude>
             <exclude>**/src/test/resources/**/*.gz</exclude>
             <exclude>**/src/test/resources/**/*.xml</exclude>
-            
+
             <!-- META-INF/services files -->
             <exclude>**/services/*LoggingModule</exclude>
             <exclude>**/services/*ApiMetadata</exclude>
@@ -932,7 +927,7 @@
                 <configuration>
                   <descriptors>
                     <descriptor>src-descriptor.xml</descriptor>
-                    <descriptor>provided-dependencies-descriptor.xml</descriptor>                                        
+                    <descriptor>provided-dependencies-descriptor.xml</descriptor>
                     <descriptor>jar-with-dependencies-no-core-no-apis-descriptor.xml</descriptor>
                   </descriptors>
                 </configuration>
@@ -948,7 +943,7 @@
           </plugin>
         </plugins>
       </build>
-    </profile>        
+    </profile>
     <profile>
       <id>site</id>
       <build>
@@ -1033,7 +1028,7 @@
               <configLocation>resources/checkstyle.xml</configLocation>
             </configuration>
           </plugin>
-        </plugins>            
+        </plugins>
       </build>
     </profile>
     <profile>

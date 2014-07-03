@@ -91,19 +91,6 @@
       <artifactId>sshj</artifactId>
       <version>0.8.1</version>
     </dependency>
-    <!-- required by sshj -->
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcpkix-jdk15on</artifactId>
-      <version>1.49</version>
-      <exclusions>
-        <!-- provided by the jclouds-bouncycastle driver -->
-        <exclusion>
-          <groupId>org.bouncycastle</groupId>
-          <artifactId>bcprov-jdk15on</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
     <dependency>
       <groupId>com.jcraft</groupId>
       <artifactId>jsch.agentproxy.sshj</artifactId>

@@ -16,21 +16,10 @@
  */
 package org.jclouds.filesystem.strategy.internal;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Provider;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.common.io.ByteSource;
+import com.google.common.io.Files;
 import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.blobstore.domain.BlobBuilder;
 import org.jclouds.blobstore.domain.internal.BlobBuilderImpl;
@@ -45,10 +34,19 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.common.io.ByteSource;
-import com.google.common.io.Files;
+import javax.inject.Provider;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 /**
  * Test class for {@link FilesystemStorageStrategyImpl } class
@@ -86,7 +84,7 @@ public class FilesystemStorageStrategyImplTest {
    protected void tearDown() throws IOException {
       TestUtils.cleanDirectoryContent(TestUtils.TARGET_BASE_DIR);
    }
-   
+
    public void testCreateDirectory() {
       storageStrategy.createDirectory(CONTAINER_NAME, null);
       TestUtils.directoryExists(TARGET_CONTAINER_NAME, true);
@@ -530,7 +528,7 @@ public class FilesystemStorageStrategyImplTest {
 
    /**
     * Calculates an absolute directory path that depends on operative system
-    * 
+    *
     * @return
     */
    private String getAbsoluteDirectory() throws IOException {

@@ -18,6 +18,8 @@ package org.jclouds.filesystem.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.DirectoryNotEmptyException;
 
 /**
  * Utilities for the filesystem blobstore.
@@ -30,6 +32,8 @@ public class Utils {
 
    /** Delete a file or a directory recursively. */
    public static void deleteRecursively(File file) throws IOException {
+      if(!file.exists())
+         return;
       if (file.isDirectory()) {
          File[] children = file.listFiles();
          if (children != null) {
@@ -38,8 +42,16 @@ public class Utils {
             }
          }
       }
-      if (!file.delete()) {
-         throw new IOException("Could not delete: " + file);
+      try {
+         /**
+          * This will throw the proper exception containing information about the error. Java 7 and up
+          */
+         java.nio.file.Files.delete(file.toPath());
+      } catch (DirectoryNotEmptyException e) {
+         deleteRecursively(file);
+      }
+      catch(AccessDeniedException e) {
+         file.deleteOnExit();
       }
    }
 }

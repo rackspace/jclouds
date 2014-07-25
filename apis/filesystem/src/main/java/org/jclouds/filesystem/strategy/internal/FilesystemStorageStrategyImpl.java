@@ -149,7 +149,7 @@ public class FilesystemStorageStrategyImpl implements LocalStorageStrategy {
 
    /**
     * Returns all the blobs key inside a container
-    * 
+    *
     * @param container
     * @return
     * @throws IOException
@@ -293,6 +293,8 @@ public class FilesystemStorageStrategyImpl implements LocalStorageStrategy {
    public void deleteDirectory(String container, String directory) {
       // create complete dir path
       String fullDirPath = buildPathStartingFromBaseDir(container, directory);
+      if(!new File(fullDirPath).exists())
+         throw new RuntimeException("Container does not exist");
       try {
          Utils.deleteRecursively(new File(fullDirPath));
       } catch (IOException ex) {
@@ -322,7 +324,7 @@ public class FilesystemStorageStrategyImpl implements LocalStorageStrategy {
    /**
     * Check if the file system resource whose name is obtained applying buildPath on the input path
     * tokens is a directory, otherwise a RuntimeException is thrown
-    * 
+    *
     * @param tokens
     *           the tokens that make up the name of the resource on the file system
     */
@@ -335,7 +337,7 @@ public class FilesystemStorageStrategyImpl implements LocalStorageStrategy {
 
    /**
     * Facility method used to concatenate path tokens normalizing separators
-    * 
+    *
     * @param pathTokens
     *           all the string in the proper order that must be concatenated in order to obtain the
     *           filename
@@ -358,7 +360,7 @@ public class FilesystemStorageStrategyImpl implements LocalStorageStrategy {
    /**
     * Substitutes all the file separator occurrences in the path with a file separator for the
     * current operative system
-    * 
+    *
     * @param pathToBeNormalized
     * @return
     */
@@ -382,7 +384,7 @@ public class FilesystemStorageStrategyImpl implements LocalStorageStrategy {
 
    /**
     * Remove leading and trailing {@link File.separator} character from the string.
-    * 
+    *
     * @param pathToBeCleaned
     * @param remove
     *           only trailing separator char from path
@@ -409,7 +411,7 @@ public class FilesystemStorageStrategyImpl implements LocalStorageStrategy {
    /**
     * Removes recursively the directory structure of a complex blob key, only if the directory is
     * empty
-    * 
+    *
     * @param container
     * @param normalizedKey
     */
@@ -466,7 +468,7 @@ public class FilesystemStorageStrategyImpl implements LocalStorageStrategy {
 
    /**
     * Creates a directory and returns the result
-    * 
+    *
     * @param container
     * @param directory
     * @return true if the directory was created, otherwise false

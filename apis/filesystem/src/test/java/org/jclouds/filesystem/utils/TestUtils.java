@@ -58,7 +58,7 @@ public class TestUtils {
 
     /**
      * Generate a random blob key simple name (with no path in the key)
-     * @return 
+     * @return
      */
     public static String createRandomBlobKey() {
         return createRandomBlobKey("", "");
@@ -117,7 +117,7 @@ public class TestUtils {
     }
 
     /**
-     * 
+     *
      * @param directoryFullPath
      * @param checkResult
      * @param expectedResult
@@ -162,12 +162,14 @@ public class TestUtils {
 
     /**
      * Empty a directory
-     * 
+     *
      * @param directoryName
      * @throws IOException
      */
     public static void cleanDirectoryContent(String directoryName) throws IOException {
         File parentDirectory = new File(directoryName);
+       if(!parentDirectory.exists())
+          return;
         File[] children = parentDirectory.listFiles();
         if (null != children) {
             for (File child : children) {

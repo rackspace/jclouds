@@ -16,10 +16,11 @@
  */
 package org.jclouds.filesystem.util;
 
+import com.google.common.util.concurrent.Uninterruptibles;
+
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
-import java.nio.file.DirectoryNotEmptyException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Utilities for the filesystem blobstore.
@@ -42,16 +43,18 @@ public class Utils {
             }
          }
       }
-      try {
-         /**
-          * This will throw the proper exception containing information about the error. Java 7 and up
-          */
-         java.nio.file.Files.delete(file.toPath());
-      } catch (DirectoryNotEmptyException e) {
-         deleteRecursively(file);
-      }
-      catch(AccessDeniedException e) {
-         file.deleteOnExit();
+
+      /**
+       * Java-6 Compatible version of handling non-empty directories and access-denied on windows.
+       */
+      if(!file.delete()){
+         if(file.isDirectory() && file.listFiles().length > 0) {
+            deleteRecursively(file);
+         } else {
+            Uninterruptibles.sleepUninterruptibly(2, TimeUnit.SECONDS);
+            if(!file.delete())
+               file.deleteOnExit();
+         }
       }
    }
 }

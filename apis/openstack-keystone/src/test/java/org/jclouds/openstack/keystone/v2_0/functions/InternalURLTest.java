@@ -23,17 +23,37 @@ import java.net.URI;
 import org.jclouds.openstack.keystone.v2_0.domain.Endpoint;
 import org.testng.annotations.Test;
 
-/**
- */
 @Test(groups = "unit", testName = "InternalURLTest")
 public class InternalURLTest {
    private final InternalURL fn = new InternalURL();
 
-   public void testInternalURL() {
+   public void testInternalURLExists() {
       assertEquals(
-            fn.apply(
-                  Endpoint.builder().region("regionOne").versionId("2.0")
-                        .internalURL(URI.create("https://ericsson.com/v2/1900e98b-7272-4cbd-8e95-0b8c2a9266c0"))
-                        .build()).get(), URI.create("https://ericsson.com/v2/1900e98b-7272-4cbd-8e95-0b8c2a9266c0"));
+            fn.apply(Endpoint.builder().region("regionOne").versionId("2.0")
+               .internalURL(URI.create("https://internal.ericsson.com/v2/1900e98b-7272-4cbd-8e95-0b8c2a9266c0"))
+                  .build()).get(),
+            URI.create("https://internal.ericsson.com/v2/1900e98b-7272-4cbd-8e95-0b8c2a9266c0"));
    }
+
+   public void testInternalURLAbsent() {
+      assertEquals(
+            fn.apply(Endpoint.builder().region("regionOne").versionId("2.0")
+               .publicURL(URI.create("https://ericsson.com/v2/1900e98b-7272-4cbd-8e95-0b8c2a9266c0"))
+                  .build()).get(),
+            URI.create("https://ericsson.com/v2/1900e98b-7272-4cbd-8e95-0b8c2a9266c0"));
+   }
+
+   /**
+    * If the {@code internalURL} is absent, then {@link InternalURL} will fallback to
+    * use the {@code publicURL}
+    */
+   public void testInternalURLAbsentAndFallbackToPublicURL() {
+      assertEquals(
+            fn.apply(Endpoint.builder().region("regionOne").versionId("2.0")
+               .publicURL(URI.create("https://ericsson.com/v2/1900e98b-7272-4cbd-8e95-0b8c2a9266c0"))
+               .adminURL(URI.create("https://admin.ericsson.com/v2/1900e98b-7272-4cbd-8e95-0b8c2a9266c0"))
+                  .build()).get(),
+            URI.create("https://ericsson.com/v2/1900e98b-7272-4cbd-8e95-0b8c2a9266c0"));
+   }
+
 }

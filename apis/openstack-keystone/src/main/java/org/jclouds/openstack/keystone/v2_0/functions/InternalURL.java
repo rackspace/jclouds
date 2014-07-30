@@ -26,14 +26,14 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 
 /**
- * Select internal URL endpoints services
- * 
+ * Select internal URL endpoints services. If the {@code internalURL} is not present
+ * in the service catalog, this class will fallback to use the {@code publicURL}.
  */
 @Singleton
 public class InternalURL implements EndpointToSupplierURI {
    @Override
    public Supplier<URI> apply(Endpoint input) {
-      return Suppliers.ofInstance(input.getInternalURL());
+      return Suppliers.ofInstance(input.getInternalURL() != null ? input.getInternalURL() : input.getPublicURL());
    }
 
    @Override

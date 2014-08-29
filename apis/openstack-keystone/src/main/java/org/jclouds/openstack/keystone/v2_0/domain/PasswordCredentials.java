@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.beans.ConstructorProperties;
 
 import org.jclouds.openstack.keystone.v2_0.config.CredentialType;
+import org.jclouds.openstack.keystone.v2_0.config.CredentialTypes;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
@@ -29,70 +30,14 @@ import com.google.common.base.Objects;
 /**
  * Password Credentials
  *
- * @see <a href="http://docs.openstack.org/api/openstack-identity-service/2.0/content/POST_authenticate_v2.0_tokens_Service_API_Api_Operations.html#d662e583"
-/>
  */
-@CredentialType("passwordCredentials")
+@CredentialType(CredentialTypes.PASSWORD_CREDENTIALS)
 public class PasswordCredentials {
-
-   public static Builder<?> builder() {
-      return new ConcreteBuilder();
-   }
-
-   public Builder<?> toBuilder() {
-      return new ConcreteBuilder().fromPasswordCredentials(this);
-   }
-
-   public static PasswordCredentials createWithUsernameAndPassword(String username, String password) {
-      return new PasswordCredentials(username, password);
-   }
-
-   public abstract static class Builder<T extends Builder<T>>  {
-      protected abstract T self();
-
-      protected String username;
-      protected String password;
-
-      /**
-       * @see PasswordCredentials#getUsername()
-       */
-      public T username(String username) {
-         this.username = username;
-         return self();
-      }
-
-      /**
-       * @see PasswordCredentials#getPassword()
-       */
-      public T password(String password) {
-         this.password = password;
-         return self();
-      }
-
-      public PasswordCredentials build() {
-         return new PasswordCredentials(username, password);
-      }
-
-      public T fromPasswordCredentials(PasswordCredentials in) {
-         return this
-               .username(in.getUsername())
-               .password(in.getPassword());
-      }
-   }
-
-   private static class ConcreteBuilder extends Builder<ConcreteBuilder> {
-      @Override
-      protected ConcreteBuilder self() {
-         return this;
-      }
-   }
 
    private final String username;
    private final String password;
 
-   @ConstructorProperties({
-         "username", "password"
-   })
+   @ConstructorProperties({"username", "password"})
    protected PasswordCredentials(String username, String password) {
       this.username = checkNotNull(username, "username");
       this.password = checkNotNull(password, "password");
@@ -134,6 +79,47 @@ public class PasswordCredentials {
    @Override
    public String toString() {
       return string().toString();
+   }
+
+   public static Builder builder() {
+      return new Builder();
+   }
+
+   public Builder toBuilder() {
+      return new Builder().fromPasswordCredentials(this);
+   }
+
+   public static class Builder {
+      protected String username;
+      protected String password;
+
+      /**
+       * @see PasswordCredentials#getUsername()
+       */
+      public Builder username(String username) {
+         this.username = username;
+         return this;
+      }
+
+      /**
+       * @see PasswordCredentials#getPassword()
+       */
+      public Builder password(String password) {
+         this.password = password;
+         return this;
+      }
+
+      public PasswordCredentials build() {
+         return new PasswordCredentials(username, password);
+      }
+
+      public Builder fromPasswordCredentials(PasswordCredentials in) {
+         return this.username(in.getUsername()).password(in.getPassword());
+      }
+   }
+
+   public static PasswordCredentials createWithUsernameAndPassword(String username, String password) {
+      return new PasswordCredentials(username, password);
    }
 
 }

@@ -49,6 +49,7 @@
     <module>openstack-trove</module>
     <module>cloudfiles</module>
     <module>cloudservers</module>
+    <module>rackspace-cloudfiles</module>
     <module>rackspace-cloudidentity</module>
     <module>rackspace-cloudloadbalancers</module>
     <module>rackspace-clouddns</module>

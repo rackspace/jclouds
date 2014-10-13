@@ -30,6 +30,7 @@ import org.jclouds.openstack.nova.v2_0.extensions.FloatingIPPoolApi;
 import org.jclouds.openstack.nova.v2_0.extensions.HostAdministrationApi;
 import org.jclouds.openstack.nova.v2_0.extensions.HostAggregateApi;
 import org.jclouds.openstack.nova.v2_0.extensions.KeyPairApi;
+import org.jclouds.openstack.nova.v2_0.extensions.ServicesApi;
 import org.jclouds.openstack.nova.v2_0.extensions.QuotaApi;
 import org.jclouds.openstack.nova.v2_0.extensions.SecurityGroupApi;
 import org.jclouds.openstack.nova.v2_0.extensions.ServerAdminApi;
@@ -262,6 +263,15 @@ public interface NovaApi extends Closeable {
    @Delegate
    Optional<ConsolesApi> getConsolesApi(
          @EndpointParam(parser = RegionToEndpoint.class) String region);
+
+
+   /**
+    * Provides access to OS-Services features.
+    */
+   @Delegate
+   Optional<ServicesApi> getServicesApi(
+         @EndpointParam(parser = RegionToEndpoint.class) String region);
+
 
    /**
     * Provides access to Floating IP Pool features.

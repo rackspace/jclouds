@@ -303,6 +303,14 @@
             "namespace": "http://docs.openstack.org/compute/ext/interfaces/api/v1.1",
             "alias": "os-attach-interfaces",
             "description": "Attach interface support."
+        },
+        {
+            "updated": "2012-10-28T00:00:00-00:00",
+            "name": "Services",
+            "links": [],
+            "namespace": "http://docs.openstack.org/compute/ext/services/api/v2",
+            "alias": "os-services",
+            "description": "Services support."
         }
     ]
 }

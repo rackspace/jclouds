@@ -95,6 +95,8 @@ public class NovaHttpApiModule extends HttpApiModule<NovaApi> {
                URI.create("http://docs.openstack.org/compute/ext/os-volume-attachment-update/api/v2"))
           .put(URI.create(ExtensionNamespaces.ATTACH_INTERFACES),
                URI.create("http://docs.openstack.org/compute/ext/interfaces/api/v1.1"))
+          .put(URI.create(ExtensionNamespaces.SERVICES),
+               URI.create("http://docs.openstack.org/compute/ext/services/api/v2"))
           .build();
    }
 

@@ -121,6 +121,10 @@ public final class ExtensionNamespaces {
     * Attach interfaces extension
     */
    public static final String ATTACH_INTERFACES = "http://docs.openstack.org/compute/ext/interfaces/api/v1.1";
+   /**
+    * OS-Services extension
+    */
+   public static final String SERVICES = "http://docs.openstack.org/compute/ext/services/api/v2";
 
    private ExtensionNamespaces() {
       throw new AssertionError("intentionally unimplemented");

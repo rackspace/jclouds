@@ -35,7 +35,6 @@ import org.jclouds.rest.annotations.MapBinder;
 import org.jclouds.rest.annotations.PayloadParam;
 import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.annotations.ResponseParser;
-import org.jclouds.rest.annotations.SkipEncoding;
 
 import com.google.common.collect.FluentIterable;
 
@@ -43,7 +42,6 @@ import com.google.common.collect.FluentIterable;
  * This API is for creating, listing, and deleting a Database
  *
  */
-@SkipEncoding({'/', '='})
 @RequestFilters(AuthenticateRequest.class)
 public interface DatabaseApi {
 

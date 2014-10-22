@@ -38,7 +38,6 @@ import org.jclouds.rest.annotations.MapBinder;
 import org.jclouds.rest.annotations.PayloadParam;
 import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.annotations.SelectJson;
-import org.jclouds.rest.annotations.SkipEncoding;
 
 import com.google.common.collect.FluentIterable;
 
@@ -49,7 +48,6 @@ import com.google.common.collect.FluentIterable;
  * @see VolumeAttachmentApi
  *
  */
-@SkipEncoding({'/', '='})
 @RequestFilters(AuthenticateRequest.class)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/volumes")

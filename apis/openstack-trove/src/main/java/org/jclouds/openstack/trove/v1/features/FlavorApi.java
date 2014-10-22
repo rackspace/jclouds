@@ -30,7 +30,6 @@ import org.jclouds.openstack.trove.v1.domain.Flavor;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.annotations.SelectJson;
-import org.jclouds.rest.annotations.SkipEncoding;
 
 import com.google.common.collect.FluentIterable;
 
@@ -39,7 +38,6 @@ import com.google.common.collect.FluentIterable;
  *
  * @see Flavor
  */
-@SkipEncoding({'/', '='})
 @RequestFilters(AuthenticateRequest.class)
 public interface FlavorApi {
    /**

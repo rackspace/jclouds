@@ -31,7 +31,6 @@ import org.jclouds.openstack.keystone.v2_0.filters.AuthenticateRequest;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.annotations.SelectJson;
-import org.jclouds.rest.annotations.SkipEncoding;
 
 import com.google.common.collect.FluentIterable;
 
@@ -39,7 +38,6 @@ import com.google.common.collect.FluentIterable;
  * Provides access to the OpenStack Block Storage (Cinder) v1 Volume Types API.
  *
  */
-@SkipEncoding({'/', '='})
 @RequestFilters(AuthenticateRequest.class)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/types")

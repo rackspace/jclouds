@@ -30,13 +30,11 @@ import org.jclouds.openstack.keystone.v2_0.filters.AuthenticateRequest;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.annotations.SelectJson;
-import org.jclouds.rest.annotations.SkipEncoding;
 
 /**
  * Provides access to the Quota API.
  *
  */
-@SkipEncoding({'/', '='})
 @RequestFilters(AuthenticateRequest.class)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/os-quota-sets")

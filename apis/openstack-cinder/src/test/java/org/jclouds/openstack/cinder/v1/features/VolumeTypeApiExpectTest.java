@@ -22,8 +22,6 @@ import static org.testng.Assert.assertNull;
 import java.net.URI;
 import java.util.Set;
 
-import org.jclouds.date.DateService;
-import org.jclouds.date.internal.SimpleDateFormatDateService;
 import org.jclouds.http.HttpResponse;
 import org.jclouds.openstack.cinder.v1.domain.VolumeType;
 import org.jclouds.openstack.cinder.v1.internal.BaseCinderApiExpectTest;
@@ -37,7 +35,6 @@ import com.google.common.collect.ImmutableSet;
  */
 @Test(groups = "unit", testName = "VolumeTypeApiExpectTest")
 public class VolumeTypeApiExpectTest extends BaseCinderApiExpectTest {
-   private DateService dateService = new SimpleDateFormatDateService();
 
    public void testListVolumeTypes() {
       URI endpoint = URI.create("http://172.16.0.1:8776/v1/50cdb4c60374463198695d9f798fa34d/types");
@@ -49,7 +46,7 @@ public class VolumeTypeApiExpectTest extends BaseCinderApiExpectTest {
       ).getVolumeTypeApi("RegionOne");
 
       Set<? extends VolumeType> types = api.list().toSet();
-      assertEquals(types, ImmutableSet.of(testVolumeType()));
+      assertEquals(types, ImmutableSet.of(testVolumeType(), VolumeType.builder().id("2").name("jclouds-test-2").build()));
    }
 
    public void testGetVolumeType() {
@@ -81,7 +78,6 @@ public class VolumeTypeApiExpectTest extends BaseCinderApiExpectTest {
       return VolumeType.builder()
             .id("1")
             .name("jclouds-test-1")
-            .created(dateService.iso8601SecondsDateParse("2012-05-10 12:33:06"))
             .extraSpecs(ImmutableMap.of("test", "value1", "test1", "wibble"))
             .build();
    }

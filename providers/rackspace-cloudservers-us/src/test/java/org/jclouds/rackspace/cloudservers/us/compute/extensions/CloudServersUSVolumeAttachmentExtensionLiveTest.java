@@ -22,6 +22,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.jclouds.ContextBuilder;
 import org.jclouds.openstack.cinder.v1.CinderApi;
@@ -39,6 +40,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.util.concurrent.Uninterruptibles;
 
 @Test(groups = "live", singleThreaded = true, testName = "CloudServersUSVolumeAttachmentExtensionLivetest")
 public class CloudServersUSVolumeAttachmentExtensionLiveTest extends VolumeAttachmentApiLiveTest {
@@ -111,11 +113,12 @@ public class CloudServersUSVolumeAttachmentExtensionLiveTest extends VolumeAttac
             assertNotNull(testAttachment.getId());
             assertEquals(testAttachment.getVolumeId(), testVolume.getId());
 
-            assertTrue(retry(new Predicate<VolumeAttachmentApi>() {
-               public boolean apply(VolumeAttachmentApi volumeAttachmentApi) {
-                  return volumeAttachmentApi.listAttachmentsOnServer(serverId).size() > before;
+            Uninterruptibles.sleepUninterruptibly(5, TimeUnit.SECONDS);
+            assertTrue(retry(new Predicate<VolumeApi>() {
+               public boolean apply(VolumeApi volumeApi) {
+                  return volumeApi.get(testVolume.getId()).getStatus().equals(Volume.Status.IN_USE);
                }
-            }, 60 * 1000L).apply(volumeAttachmentApi.get()));
+            }, 60 * 1000L).apply(volumeApi));
 
             attachments = volumeAttachmentApi.get().listAttachmentsOnServer(serverId).toSet();
             assertNotNull(attachments);
@@ -133,7 +136,7 @@ public class CloudServersUSVolumeAttachmentExtensionLiveTest extends VolumeAttac
                assertNotNull(details.getVolumeId());
                if (Objects.equal(details.getVolumeId(), testVolume.getId())) {
                   foundIt = true;
-                  assertEquals(details.getDevice(), "/dev/vdf");
+                  assertNotNull(details.getDevice());
                   assertEquals(details.getServerId(), serverId);
                }
             }

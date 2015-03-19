@@ -48,9 +48,9 @@ import com.google.inject.Provides;
  *
  */
 @ConfiguresHttpApi
-public class CloudserversUSHttpApiModule extends HttpApiModule<NovaApi> {
+public class CloudServersUSHttpApiModule extends HttpApiModule<NovaApi> {
 
-   public CloudserversUSHttpApiModule() {
+   public CloudServersUSHttpApiModule() {
    }
 
    @Override

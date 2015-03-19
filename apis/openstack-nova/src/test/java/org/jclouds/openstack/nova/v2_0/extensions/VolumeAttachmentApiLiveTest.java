@@ -17,7 +17,6 @@
 package org.jclouds.openstack.nova.v2_0.extensions;
 
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.Iterables;
 import org.jclouds.ContextBuilder;
 import org.jclouds.openstack.cinder.v1.CinderApi;
 import org.jclouds.openstack.cinder.v1.domain.Volume;
@@ -31,6 +30,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
 import static org.testng.Assert.assertEquals;
@@ -44,9 +44,20 @@ public class VolumeAttachmentApiLiveTest extends BaseNovaApiLiveTest {
    private VolumeApi volumeApi;
    private VolumeAttachmentApi volumeAttachmentApi;
 
-   private String region;
    private Volume volume;
    private Server server;
+
+   protected String volumeProvider;
+   protected int volumeSizeGB;
+
+   @Override
+   protected Properties setupProperties() {
+      Properties props = super.setupProperties();
+      volumeProvider = setIfTestSystemPropertyPresent(props, provider + ".volume-provider", "openstack-cinder");
+      volumeSizeGB = Integer.parseInt(setIfTestSystemPropertyPresent(props, provider + ".volume-size-gb", "1"));
+      singleRegion = setIfTestSystemPropertyPresent(props, provider + ".region", "RegionOne");
+      return props;
+   }
 
    @BeforeClass(groups = {"integration", "live"})
    @Override
@@ -55,61 +66,38 @@ public class VolumeAttachmentApiLiveTest extends BaseNovaApiLiveTest {
 
       CinderApi cinderApi;
 
-      if ("openstack-cinder".equals(getVolumeProvider())) {
-         cinderApi = ContextBuilder.newBuilder(getVolumeProvider())
+      if ("openstack-cinder".equals(volumeProvider)) {
+         cinderApi = ContextBuilder.newBuilder(volumeProvider)
                .endpoint(endpoint)
                .credentials(identity, credential)
                .buildApi(CinderApi.class);
       }
       else {
-         cinderApi = ContextBuilder.newBuilder(getVolumeProvider())
+         cinderApi = ContextBuilder.newBuilder(volumeProvider)
                .credentials(identity, credential)
                .buildApi(CinderApi.class);
       }
 
-      region = Iterables.getFirst(regions, "RegionOne");
-      volumeApi = cinderApi.getVolumeApi(region);
-      volumeAttachmentApi = api.getVolumeAttachmentApi(region).get();
+      volumeApi = cinderApi.getVolumeApi(singleRegion);
+      volumeAttachmentApi = api.getVolumeAttachmentApi(singleRegion).get();
 
       CreateVolumeOptions options = CreateVolumeOptions.Builder
             .name("jclouds-test-volume")
             .description("description of test volume");
 
-      volume = volumeApi.create(getVolumeSizeGB(), options);
+      volume = volumeApi.create(volumeSizeGB, options);
       VolumePredicates.awaitAvailable(volumeApi).apply(volume);
 
-      server = createServerInRegion(region);
+      server = createServerInRegion(singleRegion);
    }
 
    @AfterClass(groups = {"integration", "live"})
    @Override
    public void tearDown() {
       volumeApi.delete(volume.getId());
-      api.getServerApi(region).delete(server.getId());
+      api.getServerApi(singleRegion).delete(server.getId());
 
       super.tearDown();
-   }
-
-   public String getVolumeProvider() {
-      String volumeProviderKey = "test." + provider + ".volume-provider";
-
-      if (System.getProperties().containsKey(volumeProviderKey)) {
-         return System.getProperty(volumeProviderKey);
-      }
-      else {
-         return "openstack-cinder";
-      }
-   }
-
-   public int getVolumeSizeGB() {
-      String volumeSizeKey = "test." + provider + ".volume-size-gb";
-
-      if (System.getProperties().containsKey(volumeSizeKey)) {
-         return Integer.parseInt(System.getProperty(volumeSizeKey));
-      }
-      else {
-         return 1;
-      }
    }
 
    @Test

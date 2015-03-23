@@ -62,40 +62,44 @@ public class NovaHttpApiModule extends HttpApiModule<NovaApi> {
    @Provides
    @Singleton
    public Multimap<URI, URI> aliases() {
-       return ImmutableMultimap.<URI, URI>builder()
-          .put(URI.create(ExtensionNamespaces.SECURITY_GROUPS),
-               URI.create("http://docs.openstack.org/compute/ext/securitygroups/api/v1.1"))
-          .put(URI.create(ExtensionNamespaces.FLOATING_IPS),
-               URI.create("http://docs.openstack.org/compute/ext/floating_ips/api/v1.1"))
-          .put(URI.create(ExtensionNamespaces.KEYPAIRS),
-               URI.create("http://docs.openstack.org/compute/ext/keypairs/api/v1.1"))
-          .put(URI.create(ExtensionNamespaces.SIMPLE_TENANT_USAGE),
-               URI.create("http://docs.openstack.org/compute/ext/os-simple-tenant-usage/api/v1.1"))
-          .put(URI.create(ExtensionNamespaces.HOSTS),
-               URI.create("http://docs.openstack.org/compute/ext/hosts/api/v1.1"))
-          .put(URI.create(ExtensionNamespaces.VOLUMES),
-               URI.create("http://docs.openstack.org/compute/ext/volumes/api/v1.1"))
-          .put(URI.create(ExtensionNamespaces.VIRTUAL_INTERFACES),
-               URI.create("http://docs.openstack.org/compute/ext/virtual_interfaces/api/v1.1"))
-          .put(URI.create(ExtensionNamespaces.CREATESERVEREXT),
-               URI.create("http://docs.openstack.org/compute/ext/createserverext/api/v1.1"))
-          .put(URI.create(ExtensionNamespaces.ADMIN_ACTIONS),
-               URI.create("http://docs.openstack.org/compute/ext/admin-actions/api/v1.1"))
-          .put(URI.create(ExtensionNamespaces.AGGREGATES),
-               URI.create("http://docs.openstack.org/compute/ext/aggregates/api/v1.1"))
-          .put(URI.create(ExtensionNamespaces.FLAVOR_EXTRA_SPECS),
-               URI.create("http://docs.openstack.org/compute/ext/flavor_extra_specs/api/v1.1"))
-          .put(URI.create(ExtensionNamespaces.QUOTAS),
-               URI.create("http://docs.openstack.org/compute/ext/quotas-sets/api/v1.1"))
-          .put(URI.create(ExtensionNamespaces.VOLUME_TYPES),
-               URI.create("http://docs.openstack.org/compute/ext/volume_types/api/v1.1"))
-          .put(URI.create(ExtensionNamespaces.AVAILABILITY_ZONE),
-               URI.create("http://docs.openstack.org/compute/ext/availabilityzone/api/v1.1"))
-          .put(URI.create(ExtensionNamespaces.VOLUME_ATTACHMENTS),
-               URI.create("http://docs.openstack.org/compute/ext/os-volume-attachment-update/api/v2"))
-          .put(URI.create(ExtensionNamespaces.ATTACH_INTERFACES),
-               URI.create("http://docs.openstack.org/compute/ext/interfaces/api/v1.1"))
-          .build();
+      return customAliases(ImmutableMultimap.<URI, URI>builder()
+            .put(URI.create(ExtensionNamespaces.SECURITY_GROUPS),
+                  URI.create("http://docs.openstack.org/compute/ext/securitygroups/api/v1.1"))
+            .put(URI.create(ExtensionNamespaces.FLOATING_IPS),
+                  URI.create("http://docs.openstack.org/compute/ext/floating_ips/api/v1.1"))
+            .put(URI.create(ExtensionNamespaces.KEYPAIRS),
+                  URI.create("http://docs.openstack.org/compute/ext/keypairs/api/v1.1"))
+            .put(URI.create(ExtensionNamespaces.SIMPLE_TENANT_USAGE),
+                  URI.create("http://docs.openstack.org/compute/ext/os-simple-tenant-usage/api/v1.1"))
+            .put(URI.create(ExtensionNamespaces.HOSTS),
+                  URI.create("http://docs.openstack.org/compute/ext/hosts/api/v1.1"))
+            .put(URI.create(ExtensionNamespaces.VOLUMES),
+                  URI.create("http://docs.openstack.org/compute/ext/volumes/api/v1.1"))
+            .put(URI.create(ExtensionNamespaces.VIRTUAL_INTERFACES),
+                  URI.create("http://docs.openstack.org/compute/ext/virtual_interfaces/api/v1.1"))
+            .put(URI.create(ExtensionNamespaces.CREATESERVEREXT),
+                  URI.create("http://docs.openstack.org/compute/ext/createserverext/api/v1.1"))
+            .put(URI.create(ExtensionNamespaces.ADMIN_ACTIONS),
+                  URI.create("http://docs.openstack.org/compute/ext/admin-actions/api/v1.1"))
+            .put(URI.create(ExtensionNamespaces.AGGREGATES),
+                  URI.create("http://docs.openstack.org/compute/ext/aggregates/api/v1.1"))
+            .put(URI.create(ExtensionNamespaces.FLAVOR_EXTRA_SPECS),
+                  URI.create("http://docs.openstack.org/compute/ext/flavor_extra_specs/api/v1.1"))
+            .put(URI.create(ExtensionNamespaces.QUOTAS),
+                  URI.create("http://docs.openstack.org/compute/ext/quotas-sets/api/v1.1"))
+            .put(URI.create(ExtensionNamespaces.VOLUME_TYPES),
+                  URI.create("http://docs.openstack.org/compute/ext/volume_types/api/v1.1"))
+            .put(URI.create(ExtensionNamespaces.AVAILABILITY_ZONE),
+                  URI.create("http://docs.openstack.org/compute/ext/availabilityzone/api/v1.1"))
+            .put(URI.create(ExtensionNamespaces.VOLUME_ATTACHMENTS),
+                  URI.create("http://docs.openstack.org/compute/ext/os-volume-attachment-update/api/v2"))
+            .put(URI.create(ExtensionNamespaces.ATTACH_INTERFACES),
+                  URI.create("http://docs.openstack.org/compute/ext/interfaces/api/v1.1"))
+            .build());
+   }
+
+   protected Multimap<URI, URI> customAliases(Multimap<URI, URI> aliases) {
+      return aliases;
    }
 
    @Provides

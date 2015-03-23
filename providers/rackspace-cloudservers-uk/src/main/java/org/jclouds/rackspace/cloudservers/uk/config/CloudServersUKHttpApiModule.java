@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jclouds.rackspace.cloudservers.us.config;
+package org.jclouds.rackspace.cloudservers.uk.config;
 
 import java.net.URI;
 
@@ -28,7 +28,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 
 @ConfiguresHttpApi
-public class CloudServersUSHttpApiModule extends NovaHttpApiModule {
+public class CloudServersUKHttpApiModule extends NovaHttpApiModule {
 
    @Override
    public Multimap<URI, URI> customAliases(Multimap<URI, URI> aliases) {

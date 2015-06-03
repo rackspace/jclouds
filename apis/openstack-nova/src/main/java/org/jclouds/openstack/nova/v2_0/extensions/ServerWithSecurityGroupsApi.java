@@ -23,15 +23,24 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
+import org.jclouds.Fallbacks.EmptyPagedIterableOnNotFoundOr404;
 import org.jclouds.Fallbacks.NullOnNotFoundOr404;
+import org.jclouds.collect.PagedIterable;
 import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.openstack.keystone.v2_0.KeystoneFallbacks.EmptyPaginatedCollectionOnNotFoundOr404;
 import org.jclouds.openstack.keystone.v2_0.filters.AuthenticateRequest;
 import org.jclouds.openstack.nova.v2_0.domain.ServerWithSecurityGroups;
+import org.jclouds.openstack.nova.v2_0.functions.internal.ParseServerDetails;
+import org.jclouds.openstack.nova.v2_0.functions.internal.ParseServersWithSecurityGroupsDetails;
 import org.jclouds.openstack.v2_0.ServiceType;
+import org.jclouds.openstack.v2_0.domain.PaginatedCollection;
+import org.jclouds.openstack.v2_0.options.PaginationOptions;
 import org.jclouds.openstack.v2_0.services.Extension;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
+import org.jclouds.rest.annotations.ResponseParser;
 import org.jclouds.rest.annotations.SelectJson;
+import org.jclouds.rest.annotations.Transform;
 
 import com.google.common.annotations.Beta;
 
@@ -65,4 +74,31 @@ public interface ServerWithSecurityGroupsApi {
    @Fallback(NullOnNotFoundOr404.class)
    @Nullable
    ServerWithSecurityGroups get(@PathParam("id") String id);
+
+   /**
+    * List all servers (all details)
+    *
+    * @return all servers (all details)
+    */
+   @Named("server:list")
+   @GET
+   @Path("/detail")
+   @ResponseParser(ParseServersWithSecurityGroupsDetails.class)
+   @Transform(ParseServersWithSecurityGroupsDetails.ToPagedIterable.class)
+   @Fallback(EmptyPagedIterableOnNotFoundOr404.class)
+   PagedIterable<ServerWithSecurityGroups> listInDetail();
+
+   /**
+    * List all servers (all details)
+    *
+    * @param options Options that describe how the PaginatedCollection is retrieved from the service, such as marker or
+    *                limit.
+    * @return all servers (all details)
+    */
+   @Named("server:list")
+   @GET
+   @Path("/detail")
+   @ResponseParser(ParseServerDetails.class)
+   @Fallback(EmptyPaginatedCollectionOnNotFoundOr404.class)
+   PaginatedCollection<ServerWithSecurityGroups> listInDetail(PaginationOptions options);
 }

@@ -21,9 +21,12 @@ import static org.testng.Assert.assertNull;
 
 import java.net.URI;
 
+import org.jclouds.http.HttpRequest;
 import org.jclouds.http.HttpResponse;
+import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.domain.ServerWithSecurityGroups;
 import org.jclouds.openstack.nova.v2_0.internal.BaseNovaApiExpectTest;
+import org.jclouds.openstack.nova.v2_0.parse.ParseServerListTest;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableSet;
@@ -57,5 +60,38 @@ public class ServerWithSecurityGroupsApiExpectTest extends BaseNovaApiExpectTest
             HttpResponse.builder().statusCode(404).build()
       ).getServerWithSecurityGroupsApi("az-1.region-a.geo-1").get();
       assertNull(api.get("8d0a6ca5-8849-4b3d-b86e-f24c92490ebb"));
+   }
+
+   public void testGetServerWithSecurityGroups() {
+      URI endpoint = URI.create("https://az-1.region-a.geo-1.compute.hpcloudsvc.com/v2/3456/os-create-server-ext/8d0a6ca5-8849-4b3d-b86e-f24c92490ebb");
+      ServerWithSecurityGroupsApi api = requestsSendResponses(
+            keystoneAuthWithUsernameAndPasswordAndTenantName,
+            responseWithKeystoneAccess, extensionsOfNovaRequest, extensionsOfNovaResponse,
+            authenticatedGET().endpoint(endpoint).build(),
+            HttpResponse.builder().statusCode(200).payload(payloadFromResource("/server_with_security_groups.json")).build()
+      ).getServerWithSecurityGroupsApi("az-1.region-a.geo-1").get();
+
+      ServerWithSecurityGroups server = api.get("8d0a6ca5-8849-4b3d-b86e-f24c92490ebb");
+      assertEquals(server.getId(), "8d0a6ca5-8849-4b3d-b86e-f24c92490ebb");
+      assertEquals(server.getSecurityGroupNames(), ImmutableSet.of("default", "group1"));
+   }
+
+   public void testListServersWhenResponseIs2xx() throws Exception {
+      HttpRequest listServers = HttpRequest.builder()
+            .method("GET")
+            .endpoint("https://az-1.region-a.geo-1.compute.hpcloudsvc.com/v2/3456/servers")
+            .addHeader("Accept", "application/json")
+            .addHeader("X-Auth-Token", authToken).build();
+
+      HttpResponse listServersResponse = HttpResponse.builder().statusCode(200)
+            .payload(payloadFromResource("/server_list.json")).build();
+
+      NovaApi apiWhenServersExist = requestsSendResponses(keystoneAuthWithUsernameAndPasswordAndTenantName,
+            responseWithKeystoneAccess, listServers, listServersResponse);
+
+      assertEquals(apiWhenServersExist.getConfiguredRegions(), ImmutableSet.of("az-1.region-a.geo-1", "az-2.region-a.geo-1", "az-3.region-a.geo-1"));
+
+      assertEquals(apiWhenServersExist.getServerApi("az-1.region-a.geo-1").list().concat().toString(),
+            new ParseServerListTest().expected().toString());
    }
 }

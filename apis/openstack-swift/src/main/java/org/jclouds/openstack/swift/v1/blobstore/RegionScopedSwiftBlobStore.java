@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
@@ -71,6 +72,7 @@ import org.jclouds.openstack.swift.v1.features.BulkApi;
 import org.jclouds.openstack.swift.v1.features.ObjectApi;
 import org.jclouds.openstack.swift.v1.options.UpdateContainerOptions;
 import org.jclouds.openstack.swift.v1.reference.SwiftHeaders;
+import org.jclouds.openstack.swift.v1.strategy.internal.MultipartUploadStrategy;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -96,7 +98,8 @@ public class RegionScopedSwiftBlobStore implements BlobStore {
 
    @Inject
    protected RegionScopedSwiftBlobStore(Injector baseGraph, BlobStoreContext context, SwiftApi api,
-         @Memoized Supplier<Set<? extends Location>> locations, @Assisted String regionId) {
+         @Memoized Supplier<Set<? extends Location>> locations, @Assisted String regionId,
+         Provider<MultipartUploadStrategy> multipartUploadStrategy) {
       checkNotNull(regionId, "regionId");
       Optional<? extends Location> found = tryFind(locations.get(), idEquals(regionId));
       checkArgument(found.isPresent(), "region %s not in %s", regionId, locations.get());
@@ -112,6 +115,7 @@ public class RegionScopedSwiftBlobStore implements BlobStore {
             bind(BlobStore.class).toInstance(RegionScopedSwiftBlobStore.this);
          }
       }).getInstance(ClearListStrategy.class);
+      this.multipartUploadStrategy = multipartUploadStrategy;
    }
 
    private final BlobStoreContext context;
@@ -122,6 +126,7 @@ public class RegionScopedSwiftBlobStore implements BlobStore {
    private final BlobToHttpGetOptions toGetOptions = new BlobToHttpGetOptions();
    private final ToListContainerOptions toListContainerOptions = new ToListContainerOptions();
    private final ToResourceMetadata toResourceMetadata;
+   private final Provider<MultipartUploadStrategy> multipartUploadStrategy;
 
    @Override
    public Set<? extends Location> listAssignableLocations() {
@@ -233,7 +238,7 @@ public class RegionScopedSwiftBlobStore implements BlobStore {
    @Override
    public String putBlob(String container, Blob blob, PutOptions options) {
       if (options.isMultipart()) {
-         throw new UnsupportedOperationException();
+         return multipartUploadStrategy.get().execute(regionId, container, blob);
       }
       ObjectApi objectApi = api.getObjectApi(regionId, container);
       return objectApi.put(blob.getMetadata().getName(), blob.getPayload(), metadata(blob.getMetadata().getUserMetadata()));

@@ -476,7 +476,12 @@ public class RegionScopedSwiftBlobStore implements BlobStore {
    @Override
    public MultipartPart uploadMultipartPart(MultipartUpload mpu, int partNumber, Payload payload) {
       String partName = getMPUPartName(mpu, partNumber);
+
       String eTag = api.getObjectApi(regionId, mpu.containerName()).put(partName, payload);
+      if (eTag == null) {
+         // put should have already retried based on the jclouds.max-retries property before it failed and returned null
+         return null;
+      }
       long partSize = payload.getContentMetadata().getContentLength();
       return MultipartPart.create(partNumber, partSize, eTag);
    }
@@ -565,6 +570,9 @@ public class RegionScopedSwiftBlobStore implements BlobStore {
       int partNumber = 1;
       for (Payload payload : slicer.slice(blob.getPayload(), partSize)) {
          MultipartPart part = uploadMultipartPart(mpu, partNumber, payload);
+         if (part == null) {
+            return null;
+         }
          parts.add(part);
          ++partNumber;
       }

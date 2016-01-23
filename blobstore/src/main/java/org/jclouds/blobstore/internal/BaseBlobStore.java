@@ -92,7 +92,7 @@ public abstract class BaseBlobStore implements BlobStore {
    /**
     * This implementation invokes
     * {@link #list(String,org.jclouds.blobstore.options.ListContainerOptions)}
-    * 
+    *
     * @param container
     *           container name
     */
@@ -103,7 +103,7 @@ public abstract class BaseBlobStore implements BlobStore {
 
    /**
     * This implementation invokes {@link BlobUtilsImpl#directoryExists}
-    * 
+    *
     * @param container
     *           container name
     * @param directory
@@ -116,7 +116,7 @@ public abstract class BaseBlobStore implements BlobStore {
 
    /**
     * This implementation invokes {@link BlobUtilsImpl#createDirectory}
-    * 
+    *
     * @param container
     *           container name
     * @param directory
@@ -137,7 +137,7 @@ public abstract class BaseBlobStore implements BlobStore {
    /**
     * This implementation invokes {@link #countBlobs} with the
     * {@link ListContainerOptions#recursive} option.
-    * 
+    *
     * @param container
     *           container name
     */
@@ -148,7 +148,7 @@ public abstract class BaseBlobStore implements BlobStore {
 
    /**
     * This implementation invokes {@link BlobUtilsImpl#countBlobs}
-    * 
+    *
     * @param container
     *           container name
     */
@@ -160,7 +160,7 @@ public abstract class BaseBlobStore implements BlobStore {
    /**
     * This implementation invokes {@link #clearContainer} with the
     * {@link ListContainerOptions#recursive} option.
-    * 
+    *
     * @param container
     *           container name
     */
@@ -171,7 +171,7 @@ public abstract class BaseBlobStore implements BlobStore {
 
    /**
     * This implementation invokes {@link BlobUtilsImpl#clearContainer}
-    * 
+    *
     * @param container
     *           container name
     */
@@ -182,7 +182,7 @@ public abstract class BaseBlobStore implements BlobStore {
 
    /**
     * This implementation invokes {@link BlobUtilsImpl#deleteDirectory}.
-    * 
+    *
     * @param container
     *           container name
     */
@@ -194,7 +194,7 @@ public abstract class BaseBlobStore implements BlobStore {
    /**
     * This implementation invokes
     * {@link #getBlob(String,String,org.jclouds.blobstore.options.GetOptions)}
-    * 
+    *
     * @param container
     *           container name
     * @param key
@@ -207,7 +207,7 @@ public abstract class BaseBlobStore implements BlobStore {
 
    /**
     * This implementation invokes {@link #deleteAndEnsurePathGone}
-    * 
+    *
     * @param container
     *           bucket name
     */
@@ -307,6 +307,9 @@ public abstract class BaseBlobStore implements BlobStore {
       int partNumber = 1;
       for (Payload payload : slicer.slice(blob.getPayload(), partSize)) {
          MultipartPart part = uploadMultipartPart(mpu, partNumber, payload);
+         if (part == null) {
+            return null;
+         }
          parts.add(part);
          ++partNumber;
       }

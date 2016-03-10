@@ -21,10 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.jclouds.io.Payloads.newByteSourcePayload;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jclouds.openstack.swift.v1.SwiftApi;
 import org.jclouds.openstack.swift.v1.domain.DeleteStaticLargeObjectResponse;
@@ -43,11 +46,23 @@ import com.google.common.io.ByteSource;
 public class StaticLargeObjectApiLiveTest extends BaseSwiftApiLiveTest<SwiftApi> {
 
    private String name = getClass().getSimpleName();
-   private String containerName = getClass().getSimpleName() + "Container";
    private byte[] megOf1s;
    private byte[] megOf2s;
 
+   private static Queue<String> containerCleanup = new ConcurrentLinkedQueue<String>();
+
+   private String getContainer() {
+      String containerName = UUID.randomUUID().toString();
+      containerCleanup.add(containerName);
+      System.out.println("Creating container " + containerName);
+      for (String regionId : regions) {
+         assertTrue(api.getContainerApi(regionId).create(containerName), "Could not create container " + containerName + " in region " + regionId);
+      }
+      return containerName;
+   }
+
    public void testNotPresentWhenDeleting() throws Exception {
+      String containerName = getContainer();
       for (String regionId : regions) {
          DeleteStaticLargeObjectResponse resp = api.getStaticLargeObjectApi(regionId, containerName).delete(UUID.randomUUID().toString());
          assertThat(resp.status()).isEqualTo("200 OK");
@@ -58,16 +73,17 @@ public class StaticLargeObjectApiLiveTest extends BaseSwiftApiLiveTest<SwiftApi>
    }
 
    public void testReplaceManifest() throws Exception {
+      String containerName = getContainer();
       for (String regionId : regions) {
          ObjectApi objectApi = api.getObjectApi(regionId, containerName);
 
          String etag1s = objectApi.put(name + "/1", newByteSourcePayload(ByteSource.wrap(megOf1s)));
          awaitConsistency();
-         assertMegabyteAndETagMatches(regionId, name + "/1", etag1s);
+         assertMegabyteAndETagMatches(regionId, containerName, name + "/1", etag1s);
 
          String etag2s = objectApi.put(name + "/2", newByteSourcePayload(ByteSource.wrap(megOf2s)));
          awaitConsistency();
-         assertMegabyteAndETagMatches(regionId, name + "/2", etag2s);
+         assertMegabyteAndETagMatches(regionId, containerName, name + "/2", etag2s);
 
          List<Segment> segments = ImmutableList.<Segment> builder()
                .add(Segment.builder()
@@ -98,6 +114,7 @@ public class StaticLargeObjectApiLiveTest extends BaseSwiftApiLiveTest<SwiftApi>
 
    @Test(dependsOnMethods = "testReplaceManifest")
    public void testDelete() throws Exception {
+      String containerName = getContainer();
       for (String regionId : regions) {
          DeleteStaticLargeObjectResponse resp = api.getStaticLargeObjectApi(regionId, containerName).delete(name);
          assertThat(resp.status()).isEqualTo("200 OK");
@@ -109,6 +126,7 @@ public class StaticLargeObjectApiLiveTest extends BaseSwiftApiLiveTest<SwiftApi>
    }
 
    public void testDeleteSinglePartObjectWithMultiPartDelete() throws Exception {
+      String containerName = getContainer();
       String objectName = "testDeleteSinglePartObjectWithMultiPartDelete";
       for (String regionId : regions) {
          api.getObjectApi(regionId, containerName).put(objectName, newByteSourcePayload(ByteSource.wrap("swifty".getBytes())));
@@ -120,7 +138,7 @@ public class StaticLargeObjectApiLiveTest extends BaseSwiftApiLiveTest<SwiftApi>
       }
    }
 
-   protected void assertMegabyteAndETagMatches(String regionId, String name, String etag1s) {
+   protected void assertMegabyteAndETagMatches(String regionId, String containerName, String name, String etag1s) {
       SwiftObject object1s = api.getObjectApi(regionId, containerName).get(name);
       assertEquals(object1s.getETag(), etag1s);
       assertEquals(object1s.getPayload().getContentMetadata().getContentLength(), Long.valueOf(1024 * 1024));
@@ -130,12 +148,6 @@ public class StaticLargeObjectApiLiveTest extends BaseSwiftApiLiveTest<SwiftApi>
    @BeforeClass(groups = "live")
    public void setup() {
       super.setup();
-      for (String regionId : regions) {
-         boolean created = api.getContainerApi(regionId).create(containerName);
-         if (!created) {
-            deleteAllObjectsInContainer(regionId, containerName);
-         }
-      }
 
       megOf1s = new byte[1024 * 1024];
       megOf2s = new byte[1024 * 1024];
@@ -147,9 +159,13 @@ public class StaticLargeObjectApiLiveTest extends BaseSwiftApiLiveTest<SwiftApi>
    @Override
    @AfterClass(groups = "live")
    public void tearDown() {
-      for (String regionId : regions) {
-         deleteAllObjectsInContainer(regionId, containerName);
-         api.getContainerApi(regionId).deleteIfEmpty(containerName);
+      while (!containerCleanup.isEmpty()) {
+         String containerName = containerCleanup.poll();
+         System.out.println("Deleting container " + containerName);
+         for (String regionId : regions) {
+            deleteAllObjectsInContainer(regionId, containerName);
+            api.getContainerApi(regionId).deleteIfEmpty(containerName);
+         }
       }
       super.tearDown();
    }

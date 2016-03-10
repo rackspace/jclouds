@@ -118,7 +118,7 @@ public class StaticLargeObjectApiLiveTest extends BaseSwiftApiLiveTest<SwiftApi>
       for (String regionId : regions) {
          DeleteStaticLargeObjectResponse resp = api.getStaticLargeObjectApi(regionId, containerName).delete(name);
          assertThat(resp.status()).isEqualTo("200 OK");
-         assertThat(resp.deleted()).isEqualTo(3);
+         assertThat(resp.deleted()).isEqualTo(0);
          assertThat(resp.notFound()).isZero();
          assertThat(resp.errors()).isEmpty();
          assertEquals(api.getContainerApi(regionId).get(containerName).getObjectCount(), 0);

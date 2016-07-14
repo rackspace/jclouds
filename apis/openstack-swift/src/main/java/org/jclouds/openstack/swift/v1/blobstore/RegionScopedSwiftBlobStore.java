@@ -25,6 +25,11 @@ import static org.jclouds.blobstore.options.ListContainerOptions.Builder.recursi
 import static org.jclouds.location.predicates.LocationPredicates.idEquals;
 import static org.jclouds.openstack.swift.v1.options.PutOptions.Builder.metadata;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -96,6 +101,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteSource;
+import com.google.common.io.ByteStreams;
 import com.google.common.net.HttpHeaders;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -645,4 +651,87 @@ public class RegionScopedSwiftBlobStore implements BlobStore {
          return uploadMultipartPart(mpu, partNumber, payload);
       }
    }
+
+   @Beta
+   public void downloadBlob(String container, String name, File destination) {
+
+      RandomAccessFile raf = null;
+      try {
+         long contentLength = api
+               .getObjectApi(regionId, container)
+               .getWithoutBody(name)
+               .getPayload()
+               .getContentMetadata()
+               .getContentLength();
+
+         // Reserve space for performance reasons
+         raf = new RandomAccessFile(destination.getAbsoluteFile(), "rw");
+         raf.seek(contentLength - 1);
+         raf.write(0);
+
+         // Determine download buffer size, smaller means less memory usage; larger is faster as long as threads are saturated
+         long partSize = getMinimumMultipartPartSize();
+
+         // Loop through ranges within the file
+         long from;
+         long to;
+         List<ListenableFuture<Void>> results = new ArrayList<ListenableFuture<Void>>();
+
+         for (from = 0; from < contentLength; from = from + partSize) {
+            to = (from + partSize >= contentLength) ? contentLength - 1 : from + partSize - 1;
+            BlobDownloader b = new BlobDownloader(regionId, container, name, raf, from, to);
+            results.add(userExecutor.submit(b));
+         }
+
+         Futures.getUnchecked(Futures.allAsList(results));
+
+      } catch (IOException e) {
+         // cleanup, attempt to delete large file
+         if (raf != null) {
+            try {
+               raf.close();
+            } catch (IOException e1) {}
+         }
+         destination.delete();
+         throw new RuntimeException(e);
+      }
+   }
+
+   private final class BlobDownloader implements Callable<Void> {
+      String regionId;
+      String containerName;
+      String objectName;
+      private final RandomAccessFile raf;
+      private final long begin;
+      private final long end;
+
+      BlobDownloader(String regionId, String containerName, String objectName, RandomAccessFile raf, long begin, long end) {
+         this.regionId = regionId;
+         this.containerName = containerName;
+         this.objectName = objectName;
+         this.raf = raf;
+         this.begin = begin;
+         this.end = end;
+      }
+
+      @Override
+      public Void call() {
+         try {
+            // System.out.println("Downloading " + begin + " to " + end );
+            SwiftObject object = api.getObjectApi(regionId, containerName)
+                  .get(objectName, org.jclouds.http.options.GetOptions.Builder.range(begin, end));
+            // Download first, this is the part that usually fails
+            byte[] targetArray = ByteStreams.toByteArray(object.getPayload().openStream());
+            // Map file region
+            MappedByteBuffer out = raf.getChannel().map(FileChannel.MapMode.READ_WRITE, begin, end - begin + 1);
+            out.put(targetArray);
+            out.force();
+            // System.out.println("Downloaded " + begin + " to " + end );
+         } catch (IOException e) {
+            throw new RuntimeException(e);
+         }
+         return null;
+      }
+   }
+
 }

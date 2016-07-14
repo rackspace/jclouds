@@ -22,8 +22,9 @@ import static org.jclouds.Constants.PROPERTY_USER_THREADS;
 import static org.jclouds.blobstore.options.ListContainerOptions.Builder.recursive;
 import static org.jclouds.util.Predicates2.retry;
 
-import java.io.InputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
@@ -368,6 +369,11 @@ public abstract class BaseBlobStore implements BlobStore {
          abortMultipartUpload(mpu);
          throw re;
       }
+   }
+
+   @Override
+   public void downloadBlob(String container, String name, File dest) {
+      throw new UnsupportedOperationException();
    }
 
    private final class BlobUploader implements Callable<MultipartPart> {

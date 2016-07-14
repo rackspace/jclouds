@@ -17,6 +17,7 @@
 
 package org.jclouds.blobstore.util;
 
+import java.io.File;
 import java.util.List;
 
 import org.jclouds.blobstore.BlobStore;
@@ -164,5 +165,10 @@ public final class ReadOnlyBlobStore extends ForwardingBlobStore {
    @Override
    public List<MultipartUpload> listMultipartUploads(String container) {
       throw new UnsupportedOperationException("Read-only BlobStore");
+   }
+
+   @Override
+   public void downloadBlob(String container, String name, File dest) {
+      throw new UnsupportedOperationException();
    }
 }

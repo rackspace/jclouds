@@ -939,10 +939,17 @@ public final class LocalBlobStore implements BlobStore {
       return Integer.MAX_VALUE;
    }
 
+   @Override
+   public void downloadBlob(String container, String name, File dest) {
+      throw new UnsupportedOperationException();
+   }
+
    private static String maybeQuoteETag(String eTag) {
       if (!eTag.startsWith("\"") && !eTag.endsWith("\"")) {
          eTag = "\"" + eTag + "\"";
       }
       return eTag;
    }
+
+
 }

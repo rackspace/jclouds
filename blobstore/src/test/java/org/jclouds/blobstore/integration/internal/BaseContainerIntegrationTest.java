@@ -584,12 +584,12 @@ public class BaseContainerIntegrationTest extends BaseBlobStoreIntegrationTest {
       final String container = getContainerName();
       try {
          blobStore.createContainerInLocation(null, container);
-         blobStore.putBlob(container, blobStore.blobBuilder("a/a").payload("").build());
-         blobStore.putBlob(container, blobStore.blobBuilder("b/b").payload("").build());
-         ListContainerOptions options = new ListContainerOptions().afterMarker("b/").recursive();
+         blobStore.putBlob(container, blobStore.blobBuilder("a" + File.separator + "a").payload("").build());
+         blobStore.putBlob(container, blobStore.blobBuilder("b" + File.separator + "b").payload("").build());
+         ListContainerOptions options = new ListContainerOptions().afterMarker("b" + File.separator).recursive();
          PageSet<? extends StorageMetadata> res = blobStore.list(container, options);
          assertThat(res).hasSize(1);
-         assertThat(res.iterator().next().getName()).isEqualTo("b/b");
+         assertThat(res.iterator().next().getName()).isEqualTo("b" + File.separator + "b");
       } finally {
          returnContainer(container);
       }
